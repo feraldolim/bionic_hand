@@ -1,0 +1,8 @@
+prefix=/home/feraldo/ROS_ws/bionic_hand_ws/devel
+
+Name: rosserial_server
+Description: Description of rosserial_server
+Version: 0.7.6
+Cflags: -I/home/feraldo/ROS_ws/bionic_hand_ws/src/rosserial/rosserial_server/include
+Libs: -L/home/feraldo/ROS_ws/bionic_hand_ws/devel/lib 
+Requires: roscpp rosserial_msgs std_msgs topic_tools

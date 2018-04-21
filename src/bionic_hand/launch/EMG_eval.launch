@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Determine parameters, setup here for defaults -->
+
+  <!-- Determine gesture classifier methods-->
+  <arg name="PCA" default="0"/>         <!-- PCA method -->
+  <arg name="ANN" default="0"/>         <!-- ANN method -->
+
+  <!-- Choose PCA components or ANN model from filtered or unfiltered data.
+  1 = filtered 0 = unfiltered -->
+  <arg name="filter" default="1"/>
+
+  <!-- ANN model trainer parameters -->
+  <arg name="input" default="50"/>         <!-- Define number of neurons on input layer-->
+  <arg name="hidden1" default="100"/>      <!-- Define number of neurons on 1st hidden layer-->
+  <arg name="hidden2" default="600"/>      <!-- Define number of neurons on 2nd hidden layer-->
+
+  <!-- Myo ROS parameters -->
+  <arg name="port" default="/dev/ttyACM0" doc="Port used by the Myo dongle. Check it with 'ls /dev/' and look for ttyACM0 for instance. You need to provide the full path." />
+  <arg name="rviz" default="false" doc="rviz visualization or not"/>
+  <!-- Myo ROS node -->
+  <node pkg="ros_myo" name="myo_raw" type="myo-rawNode.py" args="$(arg port)" output="screen"/>
+
+  <!-- GO HERE FOR FILTERED DATA-->
+  <group if="$(arg filter)">
+    <!-- Define file directories-->
+    <arg name="directory" default="/home/feraldo/ROS_ws/bionic_hand_ws/data/filtered/PCA.mat"/>
+    <arg name="gesture_size" default="/home/feraldo/ROS_ws/bionic_hand_ws/data/filtered/gesture_size.csv"/>
+    <arg name="range" default="/home/feraldo/ROS_ws/bionic_hand_ws/data/filtered/range.csv"/>
+    <arg name="save_path" default="/home/feraldo/ROS_ws/bionic_hand_ws/data/filtered/tensorflow/"/>
+    <!-- PCA method -->
+    <group if="$(arg PCA)">
+      <!-- EMG data classification node here -->
+      <node pkg="bionic_hand" name="EMG_data_classifier_PCA" type="EMG_PCA.py" output="screen">
+          <param name="dir" value="$(arg directory)"/>
+          <param name="gest_size_dir" value="$(arg gesture_size)"/>
+          <param name="range_dir" value="$(arg range)"/>
+          <param name="filter_flag" value="$(arg filter)"/>
+      </node>
+    </group>
+    <!-- ANN method -->
+    <group if="$(arg ANN)">
+      <!-- EMG data classification node here -->
+      <node pkg="bionic_hand" name="EMG_data_classifier_ANN" type="EMG_ANN.py" output="screen">
+          <param name="gest_size_dir" value="$(arg gesture_size)"/>
+          <param name="filter_flag" value="$(arg filter)"/>
+          <param name="input_n" value="$(arg input)"/>
+          <param name="hidden1_n" value="$(arg hidden1)"/>
+          <param name="hidden2_n" value="$(arg hidden2)"/>
+          <param name="save_path" value="$(arg save_path)"/>
+      </node>
+    </group>
+  </group>
+
+  <!-- GO HERE FOR UNFILTERED DATA-->
+  <group unless="$(arg filter)">
+    <!-- Define file directories-->
+    <arg name="directory" default="/home/feraldo/ROS_ws/bionic_hand_ws/data/unfiltered/PCA.mat"/>
+    <arg name="gesture_size" default="/home/feraldo/ROS_ws/bionic_hand_ws/data/unfiltered/gesture_size.csv"/>
+    <arg name="range" default="/home/feraldo/ROS_ws/bionic_hand_ws/data/unfiltered/range.csv"/>
+    <arg name="save_path" default="/home/feraldo/ROS_ws/bionic_hand_ws/data/unfiltered/tensorflow/"/>
+    <!-- PCA method -->
+    <group if="$(arg PCA)">
+      <!-- EMG data classification node here -->
+      <node pkg="bionic_hand" name="EMG_data_classifier_PCA" type="EMG_PCA.py" output="screen">
+          <param name="dir" value="$(arg directory)"/>
+          <param name="gest_size_dir" value="$(arg gesture_size)"/>
+          <param name="range_dir" value="$(arg range)"/>
+          <param name="filter_flag" value="$(arg filter)"/>
+      </node>
+    </group>
+    <!-- ANN method -->
+    <group if="$(arg ANN)">
+      <!-- EMG data classification node here -->
+      <node pkg="bionic_hand" name="EMG_data_classifier_ANN" type="EMG_ANN.py" output="screen">
+          <param name="gest_size_dir" value="$(arg gesture_size)"/>
+          <param name="filter_flag" value="$(arg filter)"/>
+          <param name="input_n" value="$(arg input)"/>
+          <param name="hidden1_n" value="$(arg hidden1)"/>
+          <param name="hidden2_n" value="$(arg hidden2)"/>
+          <param name="save_path" value="$(arg save_path)"/>
+      </node>
+    </group>
+  </group>
+
+</launch>

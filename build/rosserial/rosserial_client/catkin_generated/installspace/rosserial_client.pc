@@ -1,0 +1,8 @@
+prefix=/home/feraldo/ROS_ws/bionic_hand_ws/install
+
+Name: rosserial_client
+Description: Description of rosserial_client
+Version: 0.7.6
+Cflags: 
+Libs: -L/home/feraldo/ROS_ws/bionic_hand_ws/install/lib 
+Requires: 

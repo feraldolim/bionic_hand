@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/feraldo/ROS_ws/bionic_hand_ws/install/setup.sh

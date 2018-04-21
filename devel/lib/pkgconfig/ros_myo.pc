@@ -1,0 +1,8 @@
+prefix=/home/feraldo/ROS_ws/bionic_hand_ws/devel
+
+Name: ros_myo
+Description: Description of ros_myo
+Version: 0.0.1
+Cflags: -I/home/feraldo/ROS_ws/bionic_hand_ws/devel/include
+Libs: -L/home/feraldo/ROS_ws/bionic_hand_ws/devel/lib 
+Requires: 

@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Every process here is only done for one cycle. Everything exits after the
+  process is done cleanly. -->
+
+  <!-- Determine parameters, setup here for defaults -->
+
+  <!-- Main Process -->
+  <arg name="EMG" default="0"/>   <!-- EMG data logger -->
+  <arg name="PCA" default="0"/>   <!-- PCA components calculator -->
+  <arg name="ANN" default="0"/>   <!-- ANN model trainer -->
+
+  <!-- Define filtered or unfiltered data. 1 = filtered 0 = unfiltered -->
+  <arg name="filter" default="1"/>
+
+  <!-- EMG data logger parameters -->
+  <arg name="gestures" default="1"/>       <!-- Define number of gestures-->
+  <arg name="duration" default="10"/>      <!-- Define logging duration -->
+
+  <!-- ANN model trainer parameters -->
+  <arg name="input" default="50"/>         <!-- Define number of neurons on input layer-->
+  <arg name="hidden1" default="100"/>      <!-- Define number of neurons on 1st hidden layer-->
+  <arg name="hidden2" default="600"/>      <!-- Define number of neurons on 2nd hidden layer-->
+  <arg name="epoch" default="500000"/>     <!-- Define number of training time / epochs-->
+
+  <!-- PCA components calculator parameters -->
+  <arg name="threshold" default="0.20"/>   <!-- Define threshold for eigenvectors choosing-->
+
+  <!-- Myo ROS parameters-->
+  <arg name="port" default="/dev/ttyACM0" doc="Port used by the Myo dongle. Check it with 'ls /dev/' and look for ttyACM0 for instance. You need to provide the full path." />
+  <arg name="rviz" default="false" doc="rviz visualization or not"/>
+
+  <!-- GO HERE FOR EMG DATA LOGGER -->
+  <group if="$(arg EMG)">
+    <!-- Myo ROS node -->
+    <node pkg="ros_myo" name="myo_raw" type="myo-rawNode.py" args="$(arg port)" output="screen"/>
+    <!-- EMG data logger node here -->
+    <node pkg="bionic_hand" name="EMG_data_logger" type="emg_data_logger.py" output="screen" required="true">
+        <param name="num_gest" value="$(arg gestures)"/>
+        <param name="dur" value="$(arg duration)"/>
+        <param name="EMG_log_flag" value="$(arg EMG)"/>
+        <param name="filter_flag" value="$(arg filter)"/>
+    </node>
+  </group>
+
+  <!-- GO HERE FOR PCA COMPONENTS CALCULATOR -->
+  <group if="$(arg PCA)">
+    <!-- PCA components calculator node here -->
+    <node pkg="bionic_hand" name="PCA_components" type="PCA_comp_calculator.py" output="screen" required="true">
+        <param name="threshold" value="$(arg threshold)"/>
+        <param name="filter_flag" value="$(arg filter)"/>
+    </node>
+  </group>
+
+  <!-- GO HERE FOR ANN MODEL TRAINER -->
+  <group if="$(arg ANN)">
+    <!-- ANN model trainer node here -->
+    <node pkg="bionic_hand" name="ANN_training" type="train.py" output="screen" required="true">
+        <param name="ANN_flag" value="$(arg ANN)"/>
+        <param name="epoch" value="$(arg epoch)"/>
+        <param name="filter_flag" value="$(arg filter)"/>
+        <param name="input_n" value="$(arg input)"/>
+        <param name="hidden1_n" value="$(arg hidden1)"/>
+        <param name="hidden2_n" value="$(arg hidden2)"/>
+    </node>
+  </group>
+</launch>

@@ -1,0 +1,6 @@
+model_checkpoint_path: "/home/feraldo/ROS_ws/bionic_hand_ws/data/unfiltered/tensorflow/-6780600"
+all_model_checkpoint_paths: "/home/feraldo/ROS_ws/bionic_hand_ws/data/unfiltered/tensorflow/-6780200"
+all_model_checkpoint_paths: "/home/feraldo/ROS_ws/bionic_hand_ws/data/unfiltered/tensorflow/-6780300"
+all_model_checkpoint_paths: "/home/feraldo/ROS_ws/bionic_hand_ws/data/unfiltered/tensorflow/-6780400"
+all_model_checkpoint_paths: "/home/feraldo/ROS_ws/bionic_hand_ws/data/unfiltered/tensorflow/-6780500"
+all_model_checkpoint_paths: "/home/feraldo/ROS_ws/bionic_hand_ws/data/unfiltered/tensorflow/-6780600"

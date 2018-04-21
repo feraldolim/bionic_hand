@@ -1,0 +1,35 @@
+UNFILTERED DATA
+
+    input_neurons = 530
+    hidden1_neurons = 790
+    hidden2_neurons = 1250
+    #10000 iterations -> 188 seconds ~58%-60% ~400 loss, 5 gestures (without rest)
+    #32900 iterations -> ~37% ~1.3 loss
+
+
+    input_neurons = 200
+    hidden1_neurons = 500
+    hidden2_neurons = 600
+    #10000 iterations -> 89 seconds ~30% ~5 loss, 5 gestures (without rest)
+    #173000 iterations -> ~43% ~1.2 loss
+
+
+    input_neurons = 50
+    hidden1_neurons = 100
+    hidden2_neurons = 600
+    #1000000 iterations -> 6397 seconds ~77% ~0.5 loss, 5 gestures (without rest)
+    #2000000 iterations -> ~79% ~0.5 loss
+    #3000000 iterations -> ~81% ~0.5 loss
+    #~680000 iterations -> ~68% ~0.75 loss, 6 gestures (with rest) (best yet, continue training)
+
+
+    input_neurons = 50
+    hidden1_neurons = 100
+    hidden2_neurons = 400
+    see tensorboard graphs ~40%, 6 gestures with rest
+
+
+    input_neurons = 60
+    hidden1_neurons = 200
+    hidden2_neurons = 500
+    #100000 iterations -> ~46% ~1.1 loss, 6 gestures with rest
