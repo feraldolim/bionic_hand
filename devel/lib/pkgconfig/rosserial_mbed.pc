@@ -1,8 +1,0 @@
-prefix=/home/feraldo/ROS_ws/bionic_hand_ws/devel
-
-Name: rosserial_mbed
-Description: Description of rosserial_mbed
-Version: 0.7.6
-Cflags: -I/home/feraldo/ROS_ws/bionic_hand_ws/devel/include
-Libs: -L/home/feraldo/ROS_ws/bionic_hand_ws/devel/lib 
-Requires: message_runtime

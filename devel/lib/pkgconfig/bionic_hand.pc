@@ -1,8 +1,0 @@
-prefix=/home/feraldo/ROS_ws/bionic_hand_ws/devel
-
-Name: bionic_hand
-Description: Description of bionic_hand
-Version: 0.0.2
-Cflags: -I/home/feraldo/ROS_ws/bionic_hand_ws/devel/include
-Libs: -L/home/feraldo/ROS_ws/bionic_hand_ws/devel/lib 
-Requires: message_runtime roscpp rospy nav_msgs sensor_msgs
