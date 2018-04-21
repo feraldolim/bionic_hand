@@ -1,0 +1,36 @@
+function getPCA(filename)
+format long;
+
+% Load data from this directory
+csv_dir = 'D:\SGU\Semester 7\Bionic Hand\MATLAB_dev\csv files\';
+
+%% Get file names and count the total files
+[~,file_count] = size(filename);
+
+%% Initialize empty matrices and cell for faster performance
+data_size = [];
+data = {};
+
+%% Plotting EMG Graphs for each files
+for i=1:file_count
+    % Choose one file first and read the raw data
+    file_choose = [csv_dir filename{i} '.csv'];
+    rawData = csvread(file_choose,1,0);
+    
+    % Get current data size for future NN application
+    [data_size(i),~] = size(rawData);
+    
+    % Assign each raw data for easier assignment on plotting and saving
+    data{1,i} = filename{i};    % File name
+    data{2,i} = rawData(:,1);   % UNIX timestamp
+    data{3,i} = rawData(:,2);   % EMG 1 data
+    data{4,i} = rawData(:,3);   % EMG 2 data
+    data{5,i} = rawData(:,4);   % EMG 3 data
+    data{6,i} = rawData(:,5);   % EMG 4 data
+    data{7,i} = rawData(:,6);   % EMG 5 data
+    data{8,i} = rawData(:,7);   % EMG 6 data
+    data{9,i} = rawData(:,8);   % EMG 7 data
+    data{10,i} = rawData(:,9);  % EMG 8 data
+end
+
+save PCArawData data;

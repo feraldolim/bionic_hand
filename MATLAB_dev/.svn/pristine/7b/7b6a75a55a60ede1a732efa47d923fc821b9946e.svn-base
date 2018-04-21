@@ -1,0 +1,109 @@
+function MLP_NNSim1
+clear all;
+%% Input and Output
+load PCArawDataSized.mat
+
+% Input data
+% 8 EMG input arrays, 6 gesture data of a fixed size each
+% Combine data by appending columns, test for the variance from rest
+x = [];
+for i=1:size(gesture_sized,2)
+    data{i} = gesture_sized{i}-rest_sized;
+    x = [x data{i}];
+end
+x = x';
+
+% Output data
+% 000 : Gesture 1   011 : Gesture 4
+% 001 : Gesture 2   100 : Gesture 5
+% 010 : Gesture 3   111 : Gesture 6
+d1 = [zeros(1,4*size(rest_sized,2)) ones(1,2*size(rest_sized,2))];
+d2 = [zeros(1,2*size(rest_sized,2)) ones(1,2*size(rest_sized,2)) zeros(1,2*size(rest_sized,2))];
+d3 = [zeros(1,1*size(rest_sized,2)) ones(1,1*size(rest_sized,2)) zeros(1,1*size(rest_sized,2)) ...
+    ones(1,1*size(rest_sized,2)) zeros(1,1*size(rest_sized,2)) ones(1,1*size(rest_sized,2))];
+% Combine in columns
+D = [d1; d2; d3]';
+
+% size of data
+[~,input_size] = size(x);
+m = max(size(x));
+
+%% Determine input, hidden, and output layer nodes
+input_layer = 3;
+hidden_layer = 5;
+output_layer = 3;
+
+%% Initiate weights and bias, specify learning rate and learning process
+% weights
+wA = rand(input_layer,input_size);      
+wB = rand(hidden_layer,input_layer);    
+wC = rand(output_layer,hidden_layer);   
+
+% bias
+bA = rand(input_layer,1);               
+bB = rand(hidden_layer,1);              
+bC = rand(output_layer,1);              
+
+% learning rate
+lr = 0.1;
+
+% learning process
+lp = 10;
+
+%% Learning algorithm
+for count = 1:lp
+    for n = 1:m
+        % Output yA in 1st layer of perceptron
+        vA = wA*(x(n,:))' + bA;   
+        yA = tanh(vA);            
+        
+        % Output yB in 2nd layer of perceptron
+        vB = wB*yA + bB;         
+        yB = tanh(vB);           
+        
+        % Output yC in 3rd layer of perceptron
+        vC = wC*yB + bC;         
+        yC(:,n) = vC;                 
+        
+        % Error output
+        d = D(n,:);
+        e(n,:) = d - yC(:,n)';             
+        
+        % Delta, weight difference, weight, and bias respectively (C)
+        dC = -e(n,:)';                 
+        dwC = -lr*dC*yB';         
+        wC = wC + dwC;            
+        bC = bC - lr*dC;          
+        
+        % Delta, weight difference, weight, and bias respectively (B)
+        dB = wC'*dC.*dtanh(vB);   
+        dwB = -lr*dB*yA';        
+        wB = wB + dwB;            
+        bB = bB - lr*dB;          
+        
+        % Delta, weight difference, weight, and bias respectively (A)
+        dA = wB'*dB.*dtanh(vA);   
+        dwA = -lr*dA*x(n,:);      
+        wA = wA + dwA;            
+        bA = bA - lr*dA;          
+    end
+end
+% size(e(1,:));
+% size(yC(:,1));
+
+%% Plot figures
+% learning result output plot
+subplot(2,3,1)
+plot(yC(1,:)','b');
+subplot(2,3,4)
+plot(d1,'r');
+
+subplot(2,3,2)
+plot(yC(2,:)','b');
+subplot(2,3,5)
+plot(d2,'r');
+
+subplot(2,3,3)
+plot(yC(3,:)','b');
+subplot(2,3,6)
+plot(d3,'r');

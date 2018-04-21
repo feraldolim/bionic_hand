@@ -1,0 +1,66 @@
+function ANN_EMG
+load learning_weights.mat
+load PCArawDataSized.mat
+
+% Input data
+% 8 EMG input arrays, 6 gesture data of a fixed size each
+% Combine data by appending columns, test for the variance from rest
+x = [];
+for i=1:size(gesture_sized,2)
+    %     data{i} = gesture_sized{i};
+    data{i} = gesture_sized{i}-rest_sized;
+    x = [x data{i}];
+end
+x = x';
+
+% Output data
+% 000 : Gesture 1   011 : Gesture 4
+% 001 : Gesture 2   100 : Gesture 5
+% 010 : Gesture 3   101 : Gesture 6
+%------------- DATA LEARNING OUTPUTS, CHANGE SIZE FOR TESTING
+d1 = [zeros(1,4*size(rest_sized,2)) ones(1,2*size(rest_sized,2))];
+d2 = [zeros(1,2*size(rest_sized,2)) ones(1,2*size(rest_sized,2)) zeros(1,2*size(rest_sized,2))];
+d3 = [zeros(1,1*size(rest_sized,2)) ones(1,1*size(rest_sized,2)) zeros(1,1*size(rest_sized,2)) ...
+    ones(1,1*size(rest_sized,2)) zeros(1,1*size(rest_sized,2)) ones(1,1*size(rest_sized,2))];
+%-------------
+% d1 = [zeros(1,4*400) ones(1,2*400)];
+% d2 = [zeros(1,2*400) ones(1,2*400) zeros(1,2*400)];
+% d3 = [zeros(1,1*400) ones(1,1*400) zeros(1,1*400) ...
+%     ones(1,1*400) zeros(1,1*400) ones(1,1*400)];
+
+% Combine in columns
+D = [d1; d2; d3]';
+
+% size of data
+m = max(size(x));
+
+for n = 1:m
+    % Output yA in 1st layer of perceptron
+    vA = wA*(x(n,:))' + bA;
+    yA = tanh(vA);
+    
+    % Output yB in 2nd layer of perceptron
+    vB = wB*yA + bB;
+    yB = tanh(vB);
+    
+    % Output yC in 3rd layer of perceptron
+    vC = wC*yB + bC;
+    yC(:,n) = vC;
+end
+
+%% Plot figures
+% learning result output plot
+subplot(2,3,1)
+plot(yC(1,:)','b');
+subplot(2,3,4)
+plot(d1,'r');
+
+subplot(2,3,2)
+plot(yC(2,:)','b');
+subplot(2,3,5)
+plot(d2,'r');
+
+subplot(2,3,3)
+plot(yC(3,:)','b');
+subplot(2,3,6)
+plot(d3,'r');

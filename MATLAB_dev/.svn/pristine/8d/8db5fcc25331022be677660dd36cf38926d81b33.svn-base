@@ -1,0 +1,36 @@
+function dataAnalyze
+%% Get PCArawData and take minimum size, for calculations
+load PCArawData rest gesture;
+
+% take gesture sample size
+[~,gesture_size] = size(gesture);
+
+% Get minimum data size while taking note of the sizes
+for i=1:gesture_size+1
+    if i < gesture_size+1
+        data_size(i,1) = size(gesture{i},1);
+    else
+        data_size(i,1) = size(rest,1);
+    end
+end
+array_size = min(data_size);
+
+% Reduce gesture and rest array
+for i=1:gesture_size
+    gesture_sized{i} = transpose(gesture{i}(1:array_size,:));
+end
+rest_sized = transpose(rest(1:array_size,:));
+
+% Save resized data
+save PCArawDataSized rest_sized gesture_sized
+
+%% Get weight for PCA
+for m = 1:gesture_size
+    for i=1:array_size
+        cov{m,i} = (gesture_sized{m}(:,i) - rest_sized(:,i))*(gesture_sized{m}(:,i) - rest_sized(:,i))';
+        [V{m,i},D{m,i}] = eig(cov{m,i});
+        a{m,i} = pinv(cov{m,i})*gesture_sized{m}(:,i);
+    end
+end
+% Save eigenvalue and weight data
+save eigenvalue_data cov V D a;

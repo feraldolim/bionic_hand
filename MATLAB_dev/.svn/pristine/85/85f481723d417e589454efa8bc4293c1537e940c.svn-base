@@ -1,0 +1,70 @@
+%% Libraries used: MyoMex C++ Lib source: https://github.com/mark-toma/MyoMex
+% Install Add-on MinGW C/C++ compiler for MATLAB to run this
+% Refer to the github readme instructions
+
+function getPCArawData(gesture_count)
+%% CURRENTLY CAN ONLY RUN ONCE, BECAUSE MEXLOCK. RESTART MATLAB AFTER ONE FUNCTION CALL
+countMyos = 1;
+
+%% Instantiate MyoMex
+% After constructing a new |MyoMex| instance, we'll inspect its properties.
+mm = MyoMex(countMyos);
+
+%%
+% Notice that the only property of |mm| is a |1xcountMyos| MyoData object.
+% There is no device data stored by |mm|. The data from each physical Myo
+% device is passed through |mm| to each element of |mm.myoData|.
+
+%% Inspect |MyoData|
+% Since |MyoData| objects inherit from |handle|, we can get handles to the
+% |MyoData| objects representing each physical device and use them
+% directly.
+
+m1 = mm.myoData(1);
+
+%% Collect Data Here
+% collect about T seconds of data
+T = 5; % seconds
+
+disp('Prepare to take rest gesture in 5 seconds from now.');
+for i = 1:5
+    disp(i); disp('...');
+    pause(1);
+end
+disp('Recording for 5 seconds.');
+m1.clearLogs()
+m1.startStreaming();
+pause(T);
+m1.stopStreaming();
+fprintf('Logged data for %d seconds,\n\t',T);
+fprintf('EMG samples: %10d\tApprox. EMG sample rate: %5.2f\n\t',...
+  length(m1.timeEMG_log),length(m1.timeEMG_log)/T);
+
+rest = m1.emg_log;
+disp('Finish taking rest gesture. Proceeding to the next gesture logging.');
+
+for loop_count = 1:gesture_count
+    disp('Prepare in 5 seconds from now.');
+    for i = 1:5
+        disp(i); disp('...');
+        pause(1);
+    end
+    
+    disp('Recording for 5 seconds.');
+    m1.clearLogs()
+    m1.startStreaming();
+    pause(T);
+    m1.stopStreaming();
+    fprintf('Logged data for %d seconds,\n\t',T);
+    fprintf('EMG samples: %10d\tApprox. EMG sample rate: %5.2f\n\t',...
+        length(m1.timeEMG_log),length(m1.timeEMG_log)/T);
+    
+    gesture{loop_count} = m1.emg_log;
+    if loop_count < gesture_count
+        disp('Finish taking new gesture data. Proceeding to the next gesture logging.');
+    else
+        disp('Finished logging data.');
+    end
+end
+
+save PCArawData rest gesture
